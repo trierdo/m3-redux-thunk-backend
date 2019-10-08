@@ -4,6 +4,7 @@ import ReduxThunk from 'redux-thunk';
 
 import { IUI, IBM } from '../state/appState';
 import { IWindow } from '../framework/IWindow'
+import { IAction } from './IAction';
 declare let window: IWindow;
 
 //Dev tools are needed so we can see the state in the browser
@@ -39,5 +40,8 @@ export class CS {
             reducer,
             reduxMiddleware
         );
+    }
+    public clientAction(action:IAction){
+        this.store.dispatch(action);
     }
 }

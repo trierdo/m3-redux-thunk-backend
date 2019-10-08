@@ -17,14 +17,16 @@ window.CS.initializeStore();
 console.log(window.CS.getUIState().counter);
 
 //the inital render
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App stateCounter={window.CS.getUIState().counter}/>, document.getElementById('root'));
 //whenever there is a new state, we render again
+
+
 window.CS.getStore().subscribe(() => {
     window.CS.log("3. before render ---------------------------------------------");
-    ReactDOM.render(<App />, document.getElementById('root'));
+    ReactDOM.render(<App stateCounter={window.CS.getUIState().counter}/>, document.getElementById('root'));
     window.CS.log("3. after render ---------------------------------------------");
   });
-  
+
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

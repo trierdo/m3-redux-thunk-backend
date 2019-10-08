@@ -2,10 +2,13 @@ import React from 'react';
 import SimpleAsset from './components/SimpleAsset'
 import mongoose from 'mongoose';
 
+import { IAction, ActionType } from './framework/IAction';
 import { IWindow } from './framework/IWindow'
 declare let window: IWindow;
 
-interface IProps { }
+interface IProps {
+  stateCounter:number
+ }
 
 export interface IAssetData {
   _id: string;
@@ -14,7 +17,11 @@ export interface IAssetData {
 }
 
 interface IState {
-  assets: JSX.Element[];
+  counter:number;
+}
+
+export interface ICreateAsset extends IAction{
+  asset:IAssetData
 }
 
 export default class App extends React.PureComponent<IProps, IState> {
@@ -25,20 +32,10 @@ export default class App extends React.PureComponent<IProps, IState> {
 
     this.handleCreateAsset = this.handleCreateAsset.bind(this);
     this.handleDeleteAsset = this.handleDeleteAsset.bind(this);
-
-    const exampleAsset = {
-      _id: mongoose.Types.ObjectId().toString(),
-      asset_name: "This is an example, press Edit to change name and Value",
-      asset_value: 0
-    }
-
-    this.state = {
-      assets: [exampleAsset].map(asset => <SimpleAsset key={asset._id} onDelete={this.handleDeleteAsset} asset={asset} edit={false} />)
-    }
   }
- 
 
   render() {
+    window.CS.log("App --> render()")
     return (
       <div>
         <p> {window.CS.getUIState().counter}</p>
@@ -49,7 +46,6 @@ export default class App extends React.PureComponent<IProps, IState> {
         <table>
           <tbody>
             <tr><th>description</th><th>value</th><th>action</th></tr>
-            {this.state.assets}
             {window.CS.getBMState().assets.map(asset => <SimpleAsset key={asset._id} onDelete={this.handleDeleteAsset} asset={asset} edit={false} />)}
           </tbody>
         </table>
@@ -63,32 +59,15 @@ export default class App extends React.PureComponent<IProps, IState> {
       asset_name: "",
       asset_value: 0
     }
-    let newAssets = this.state.assets.slice();
-
-    newAssets.push(<SimpleAsset key={newAsset._id} onDelete={this.handleDeleteAsset} edit={true} asset={newAsset} />);
-
-    this.setState(
-      {
-        assets: newAssets
-      }
-    );
-    console.log(newAsset);
+    const action:ICreateAsset ={
+      type:ActionType.create_asset,
+      asset:newAsset
+    }
+    window.CS.clientAction(action);
   }
-
-
   handleDeleteAsset(event: any) {
     const IdOfAssetToDelete = event.target.id;
     console.log("Delete asset with _id:" + IdOfAssetToDelete);
-
-    let newAssets = this.state.assets.filter(asset => {
-      console.log("asset.key:" + asset.key + " IdOfAssetToDelete:" + IdOfAssetToDelete + " " + (asset.key !== IdOfAssetToDelete));
-      return asset.key !== IdOfAssetToDelete;
-    })
-    this.setState(
-      {
-        assets: newAssets
-      }
-    );
   }
 
 }
