@@ -2,8 +2,9 @@ import React from 'react';
 import SimpleAsset from './components/SimpleAsset'
 import mongoose from 'mongoose';
 
-interface IProps{}
 
+
+interface IProps{}
 export interface IAssetData{
     _id:string;
     asset_name:string;
@@ -44,6 +45,7 @@ export default class App extends React.PureComponent<IProps, IState> {
           <tbody>
             <tr><th>description</th><th>value</th><th>action</th></tr>
             {this.state.assets}
+            
           </tbody>
         </table>
       </div>
