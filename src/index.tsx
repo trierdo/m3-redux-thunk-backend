@@ -12,13 +12,18 @@ import { applyMiddleware } from 'redux';
 import ReduxThunk from 'redux-thunk';
 
 //import framework components
-import {IWindow} from './framework/IWindow'
 import {reducer} from './reducer/appReducer'
 import Logger from './framework/Logger'
 
+import {IWindow} from './framework/IWindow'
+import { IState } from './state/appState';
 declare let window: IWindow;
+
 window.logger = new Logger("debug");
 
+
+//Dev tools are needed so we can see the state in the browser
+//Redux thunk is needed for actions that make a rest call in order to create another action, when the server responds
 let reduxMiddleware;
 if (window.__REDUX_DEVTOOLS_EXTENSION__) {
     reduxMiddleware = compose(
@@ -27,14 +32,16 @@ if (window.__REDUX_DEVTOOLS_EXTENSION__) {
     );
   } else { reduxMiddleware = applyMiddleware(ReduxThunk); }
 
- 
+
+//the reducer is the ONLY place where state can be (should be) changed
 window.store = createStore(
     reducer,
     reduxMiddleware
   );
-   
+
+//the inital render
 ReactDOM.render(<App />, document.getElementById('root'));
- 
+//whenever there is a new state, we render again
 window.store.subscribe(() => {
     window.logger.debug("3. before render ---------------------------------------------");
     ReactDOM.render(<App />, document.getElementById('root'));
