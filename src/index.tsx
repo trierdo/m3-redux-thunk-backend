@@ -4,30 +4,25 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-// add redux support: npm install redux
-import { createStore, compose, applyMiddleware } from 'redux';
-
-// add thunk to dispatch multiple actions for just one UI event: npm install redux-thunk
-import ReduxThunk from 'redux-thunk';
-
 //import framework components
-import {reducer} from './reducer/appReducer'
-import Logger from './framework/Logger'
+import {CS} from './framework/CS';
 import {IWindow} from './framework/IWindow'
 declare let window: IWindow;
 
 
-import {CS} from './framework/CS';
 
 window.CS = new CS();
+window.CS.initializeStore();
+
+console.log(window.CS.getUIState().counter);
 
 //the inital render
 ReactDOM.render(<App />, document.getElementById('root'));
 //whenever there is a new state, we render again
 window.CS.getStore().subscribe(() => {
-    window.logger.debug("3. before render ---------------------------------------------");
+    window.CS.log("3. before render ---------------------------------------------");
     ReactDOM.render(<App />, document.getElementById('root'));
-    window.logger.debug("3. after render ---------------------------------------------");
+    window.CS.log("3. after render ---------------------------------------------");
   });
   
 

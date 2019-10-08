@@ -2,8 +2,8 @@ import { createStore, compose, applyMiddleware } from 'redux';
 import { reducer } from '../reducer/appReducer'
 import ReduxThunk from 'redux-thunk';
 
+import { IUI, IBM } from '../state/appState';
 import { IWindow } from '../framework/IWindow'
-import Logger from './Logger';
 declare let window: IWindow;
 
 //Dev tools are needed so we can see the state in the browser
@@ -19,18 +19,25 @@ if (window.__REDUX_DEVTOOLS_EXTENSION__) {
 
 export class CS {
     private store: any;
-    private logger: Logger;
-    constructor() {
+    public log(message: string) {
+        console.log(message);
+    }
+    public getStore(){
+        return this.store;
+    }
+    public getState() {
+        return this.store.getState();
+    }
+    public getUIState() {
+        return this.getState().UI as IUI;
+    }
+    public getBMState() {
+        return this.getState().BM as IBM;
+    }
+    public initializeStore() {
         this.store = createStore(
             reducer,
             reduxMiddleware
         );
-        this.logger = new Logger("debug");
-    }
-    public log(message: string) {
-        this.logger.debug(message);
-    }
-    public getStore(){
-        return this.store;
     }
 }

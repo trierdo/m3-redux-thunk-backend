@@ -3,10 +3,10 @@ import SimpleAsset from './components/SimpleAsset'
 import mongoose from 'mongoose';
 
 import { IWindow } from './framework/IWindow'
-import { IUI, IBM } from './state/appState';
 declare let window: IWindow;
 
 interface IProps { }
+
 export interface IAssetData {
   _id: string;
   asset_name: string;
@@ -36,17 +36,12 @@ export default class App extends React.PureComponent<IProps, IState> {
       assets: [exampleAsset].map(asset => <SimpleAsset key={asset._id} onDelete={this.handleDeleteAsset} asset={asset} edit={false} />)
     }
   }
-  getUIState(){
-    return window.store.getState().UI as IUI;
-  }
-  getBMState(){
-    return window.store.getState().BM as IBM;  
-  }
+ 
 
   render() {
     return (
       <div>
-        <p> {this.getUIState().counter}</p>
+        <p> {window.CS.getUIState().counter}</p>
         <h1>simple asset management application</h1>
         <p>to create a new asset click this button:&nbsp;
           <button onClick={this.handleCreateAsset}>create asset</button>
@@ -55,7 +50,7 @@ export default class App extends React.PureComponent<IProps, IState> {
           <tbody>
             <tr><th>description</th><th>value</th><th>action</th></tr>
             {this.state.assets}
-            {this.getBMState().assets.map(asset => <SimpleAsset key={asset._id} onDelete={this.handleDeleteAsset} asset={asset} edit={false} />)}
+            {window.CS.getBMState().assets.map(asset => <SimpleAsset key={asset._id} onDelete={this.handleDeleteAsset} asset={asset} edit={false} />)}
           </tbody>
         </table>
       </div>
