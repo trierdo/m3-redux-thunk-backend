@@ -31,21 +31,6 @@ window.CS.getStore().subscribe(() => {
 });
 
 
-//just to show how the control flow works we create our first action here
-const newAsset: IAssetData = {
-  _id: mongoose.Types.ObjectId().toString(),
-  asset_name: "Porsche comes from index.tsx",
-  asset_value: 50000
-};
-const action: IAssetAction = {
-  type: ActionType.create_asset,
-  asset: newAsset
-};
-//now we tell the ClientService to process the action,
-//which will cause that the subscribe() method we defined before
-//will rerender the virtual DOM and react will rerender the Browser DOM
-window.CS.clientAction(action);
-
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
