@@ -2,7 +2,6 @@ export interface IUI{
     counter: number;
     loggedIn: boolean;
     waitingForResponse:boolean;
-    UIversion:string;
 }
 
 interface IAssetData {
@@ -27,7 +26,6 @@ export const initial:IState = {
 		counter: 0,
 		loggedIn: false,
 		waitingForResponse: false,
-		UIversion:'01',
 	},
 	BM: {
         assets:[]
