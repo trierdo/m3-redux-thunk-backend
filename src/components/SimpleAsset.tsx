@@ -17,8 +17,6 @@ interface IProps {
 
 interface IState {
     edit_mode: boolean;
-    asset: IAssetData;
-    counter: number;
 }
 
 export interface IUpdateAsset extends IAction {
@@ -35,7 +33,7 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
-        this.handleUpdate = this.handleUpdate.bind(this);
+        this.handleSwitchToEditMode = this.handleSwitchToEditMode.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
@@ -44,8 +42,6 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
 
         this.state = {
             edit_mode: props.edit,
-            asset: props.asset,
-            counter: window.CS.getUIState().counter
         }
 
     }
@@ -71,19 +67,20 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
                     <td>{this.props.asset.asset_name}</td>
                     <td>{this.props.asset.asset_value} €</td>
                     <td>
-                        <button onClick={this.handleUpdate}>edit</button>
+                        <button onClick={this.handleSwitchToEditMode}>edit</button>
                         <button onClick={this.handleDelete} id={this.props.asset._id}>sell or dispose</button>
                         <button onClick={this.handleRerenderTest} >increase State Counter {window.CS.getUIState().counter}</button>
                     </td>
                 </tr>
             )
     }
+    handleSwitchToEditMode() {
+        this.setState({ edit_mode: true });
+    }
+
     handleNameChange(event: any) {
-        const newAsset = {
-            _id: this.state.asset._id,
-            asset_name: event.target.value,
-            asset_value: this.state.asset.asset_value
-        }
+        const newAsset = this.props.asset;
+        newAsset.asset_name =  event.target.value
         const action: IUpdateAsset = {
             type: ActionType.update_asset,
             asset: newAsset
@@ -91,22 +88,18 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
         window.CS.clientAction(action);
     }
     handleValueChange(event: any) {
-        const newAsset = {
-            _id: this.state.asset._id,
-            asset_name: this.state.asset.asset_name,
-            asset_value: event.target.value,
-        }
+        const newAsset = this.props.asset;
+        newAsset.asset_value = event.target.value;
         const action: IUpdateAsset = {
             type: ActionType.update_asset,
             asset: newAsset
         }
         window.CS.clientAction(action);
     }
+
+    
     handleSave(event: any) {
         this.setState({ edit_mode: false });
-    }
-    handleUpdate() {
-        this.setState({ edit_mode: true });
     }
     handleDelete() {
         const action: IDeleteAsset = {
