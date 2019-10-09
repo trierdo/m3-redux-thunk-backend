@@ -41,7 +41,8 @@ export class CS {
             reduxMiddleware
         );
     }
-    public clientAction(action:IAction){
-        this.store.dispatch(action);
+   //changed this to any because of the thunk returning a function ...
+   public clientAction(action:IAction | Function){
+    this.store.dispatch(action);
     }
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import SimpleAsset from './components/SimpleAsset'
 import mongoose from 'mongoose';
+import axios from 'axios';
 
 import { IAction, ActionType } from './framework/IAction';
 import { IWindow } from './framework/IWindow'
@@ -31,11 +32,15 @@ export default class App extends React.PureComponent<IProps, IState> {
     this.handleCreateAsset = this.handleCreateAsset.bind(this);
   }
 
+  componentDidMount(){
+    window.CS.clientAction(assetsReadActionCreator())
+  }
+
   render() {
     window.CS.log("App --> render()")
     return (
       <div>
-        <p> {window.CS.getUIState().counter}</p>
+        <p> {window.CS.getUIState().waitingForResponse.toString()}{window.CS.getUIState().counter}</p>
         <h1>simple asset management application</h1>
         <p>to create a new asset click this button:&nbsp;
           <button onClick={this.handleCreateAsset}>create asset</button>
@@ -62,5 +67,27 @@ export default class App extends React.PureComponent<IProps, IState> {
       asset: newAsset
     }
     window.CS.clientAction(action);
+  }
+}
+
+export interface IAssetsLoadedAction extends IAction{
+  assets:IAssetData[]
+}
+
+function assetsReadActionCreator(){
+  return function (dispatch:any){
+    const uiAction: IAction = {
+      type:ActionType.server_called
+    }
+    dispatch(uiAction);
+    axios.get('http://localhost:8080/assets/').then(response => {
+      console.log("this data was loaded as a result of componentDidMount:");
+      console.log(response.data);
+      const responseAction: IAssetsLoadedAction={
+        type:ActionType.add_assets_from_server,
+        assets:response.data as IAssetData[]
+      }
+      dispatch(responseAction);
+    }).catch(function (error) { console.log(error); })
   }
 }

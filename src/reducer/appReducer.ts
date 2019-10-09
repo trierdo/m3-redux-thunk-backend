@@ -1,7 +1,7 @@
 import { initial, IState } from '../state/appState'
 import { IWindow } from '../framework/IWindow'
 import { IAction, ActionType } from '../framework/IAction'
-import { IAssetData, IAssetAction } from '../App';
+import { IAssetData, IAssetAction, IAssetsLoadedAction } from '../App';
 
 declare let window: IWindow;
 
@@ -12,6 +12,15 @@ export const reducer = (state = initial, action: IAction) => {
     newState.UI.counter = state.UI.counter + 1;
     switch (action.type) {
         case ActionType.INIT:
+            return newState;
+        case ActionType.server_called:
+            newState.UI.waitingForResponse=true;
+            return newState;
+
+        case ActionType.add_assets_from_server:
+            const assetsLoaded = action as IAssetsLoadedAction;
+            newState.UI.waitingForResponse=false;
+            newState.BM.assets = assetsLoaded.assets;
             return newState;
 
         case ActionType.create_asset:
