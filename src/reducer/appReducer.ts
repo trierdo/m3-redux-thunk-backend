@@ -1,9 +1,7 @@
 import { initial, IState } from '../state/appState'
 import { IWindow } from '../framework/IWindow'
 import { IAction, ActionType } from '../framework/IAction'
-import { IUpdateAsset, IDeleteAsset } from '../components/SimpleAsset'
-import mongoose from 'mongoose';
-import { IAssetData } from '../App';
+import { IAssetData, IAssetAction } from '../App';
 
 declare let window: IWindow;
 
@@ -17,17 +15,12 @@ export const reducer = (state = initial, action: IAction) => {
             return newState;
 
         case ActionType.create_asset:
-            newState.BM.assets.push(
-                {
-                    _id: mongoose.Types.ObjectId().toString(),
-                    asset_name: "new Asset",
-                    asset_value: 0
-                }
-            )
+            const createAction = action as IAssetAction
+            newState.BM.assets.push(createAction.asset);
             return newState;
 
         case ActionType.update_asset:
-            let updateAction = action as IUpdateAsset;
+            let updateAction = action as IAssetAction;
             let assetToChange: IAssetData[] = newState.BM.assets.filter(asset => asset._id === updateAction.asset._id)
             console.log(assetToChange);
             assetToChange[0].asset_name = updateAction.asset.asset_name;
@@ -36,7 +29,7 @@ export const reducer = (state = initial, action: IAction) => {
 
         case ActionType.delete_asset:
             console.log("Delete Action");
-            let deleteAction = action as IDeleteAsset;
+            let deleteAction = action as IAssetAction;
             let assetsToKeep: IAssetData[] = newState.BM.assets.filter(asset => asset._id !== deleteAction.asset._id)
             newState.BM.assets = assetsToKeep;
             return newState;

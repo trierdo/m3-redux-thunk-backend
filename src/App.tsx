@@ -7,8 +7,8 @@ import { IWindow } from './framework/IWindow'
 declare let window: IWindow;
 
 interface IProps {
-  stateCounter:number
- }
+  stateCounter: number
+}
 export interface IAssetData {
   _id: string;
   asset_name: string;
@@ -18,8 +18,8 @@ export interface IAssetData {
 interface IState {
 }
 
-export interface ICreateAsset extends IAction{
-  asset:IAssetData
+export interface IAssetAction extends IAction {
+  asset: IAssetData
 }
 
 export default class App extends React.PureComponent<IProps, IState> {
@@ -49,7 +49,7 @@ export default class App extends React.PureComponent<IProps, IState> {
       </div>
     );
   }
-  
+
   handleCreateAsset() {
     console.log("handleCreateAsset invoked");
     const newAsset: IAssetData = {
@@ -57,10 +57,10 @@ export default class App extends React.PureComponent<IProps, IState> {
       asset_name: "",
       asset_value: 0
     }
-    const action:ICreateAsset ={
-      type:ActionType.create_asset,
-      asset:newAsset
+    const action: IAssetAction = {
+      type: ActionType.create_asset,
+      asset: newAsset
     }
     window.CS.clientAction(action);
   }
- }
+}

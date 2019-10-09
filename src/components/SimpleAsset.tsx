@@ -1,5 +1,5 @@
 import React from 'react';
-import { IAssetData } from '../App';
+import { IAssetData, IAssetAction } from '../App';
 import { ActionType, IAction } from '../framework/IAction';
 
 import { IWindow } from '../framework/IWindow';
@@ -17,14 +17,6 @@ interface IProps {
 
 interface IState {
     edit_mode: boolean;
-}
-
-export interface IUpdateAsset extends IAction {
-    asset: IAssetData
-}
-
-export interface IDeleteAsset extends IAction {
-    asset: IAssetData
 }
 
 
@@ -81,7 +73,7 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
     handleNameChange(event: any) {
         const newAsset = this.props.asset;
         newAsset.asset_name =  event.target.value
-        const action: IUpdateAsset = {
+        const action: IAssetAction = {
             type: ActionType.update_asset,
             asset: newAsset
         }
@@ -90,7 +82,7 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
     handleValueChange(event: any) {
         const newAsset = this.props.asset;
         newAsset.asset_value = event.target.value;
-        const action: IUpdateAsset = {
+        const action: IAssetAction = {
             type: ActionType.update_asset,
             asset: newAsset
         }
@@ -102,7 +94,7 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
         this.setState({ edit_mode: false });
     }
     handleDelete() {
-        const action: IDeleteAsset = {
+        const action: IAssetAction = {
             type: ActionType.delete_asset,
             asset:this.props.asset
         }

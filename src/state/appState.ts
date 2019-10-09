@@ -1,5 +1,3 @@
-import mongoose from 'mongoose';
-
 export interface IUI{
     counter: number;
     loggedIn: boolean;
@@ -32,12 +30,6 @@ export const initial:IState = {
 		UIversion:'01',
 	},
 	BM: {
-        assets:[
-            {
-            _id: mongoose.Types.ObjectId().toString(),
-            asset_name: "Porsche comes from redux state",
-            asset_value: 50000
-            }
-        ]
+        assets:[]
 	}
 };
