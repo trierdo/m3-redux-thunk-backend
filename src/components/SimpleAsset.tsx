@@ -1,6 +1,6 @@
 import React from 'react';
 import { IAssetData } from '../App';
-import { ActionType,IAction } from '../framework/IAction';
+import { ActionType, IAction } from '../framework/IAction';
 
 import { IWindow } from '../framework/IWindow';
 declare let window: IWindow;
@@ -21,10 +21,14 @@ interface IState {
     counter: number;
 }
 
-export interface IUpdateAsset extends IAction{
-    asset:IAssetData
-  }
-  
+export interface IUpdateAsset extends IAction {
+    asset: IAssetData
+}
+
+export interface IDeleteAsset extends IAction {
+    asset: IAssetData
+}
+
 
 export default class SimpleAsset extends React.PureComponent<IProps, IState> {
 
@@ -43,7 +47,7 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
             asset: props.asset,
             counter: window.CS.getUIState().counter
         }
-   
+
     }
 
     render() {
@@ -74,7 +78,6 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
                 </tr>
             )
     }
-
     handleNameChange(event: any) {
         const newAsset = {
             _id: this.state.asset._id,
@@ -87,7 +90,6 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
         }
         window.CS.clientAction(action);
     }
-
     handleValueChange(event: any) {
         const newAsset = {
             _id: this.state.asset._id,
@@ -100,20 +102,19 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
         }
         window.CS.clientAction(action);
     }
-
     handleSave(event: any) {
         this.setState({ edit_mode: false });
     }
-
-
     handleUpdate() {
         this.setState({ edit_mode: true });
     }
     handleDelete() {
-
+        const action: IDeleteAsset = {
+            type: ActionType.delete_asset,
+            asset:this.props.asset
+        }
+        window.CS.clientAction(action)
     }
-
-
     handleRerenderTest(event: any) {
         const action: IAction = {
             type: ActionType.render_test,

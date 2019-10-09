@@ -1,13 +1,11 @@
 import { initial, IState } from '../state/appState'
 import { IWindow } from '../framework/IWindow'
 import { IAction, ActionType } from '../framework/IAction'
-import {IUpdateAsset} from '../components/SimpleAsset'
+import { IUpdateAsset, IDeleteAsset } from '../components/SimpleAsset'
 import mongoose from 'mongoose';
 import { IAssetData } from '../App';
 
 declare let window: IWindow;
-
-
 
 export const reducer = (state = initial, action: IAction) => {
     window.CS.log("2. ACTION:" + action.type);
@@ -17,22 +15,32 @@ export const reducer = (state = initial, action: IAction) => {
     switch (action.type) {
         case ActionType.INIT:
             return newState;
+
         case ActionType.create_asset:
-                newState.BM.assets.push(
-                    {
-                        _id: mongoose.Types.ObjectId().toString(),
-                        asset_name: "new Asset",
-                        asset_value: 0
-                    }
-                )
+            newState.BM.assets.push(
+                {
+                    _id: mongoose.Types.ObjectId().toString(),
+                    asset_name: "new Asset",
+                    asset_value: 0
+                }
+            )
             return newState;
+
         case ActionType.update_asset:
             let updateAction = action as IUpdateAsset;
-            let assetToChange:IAssetData[] = newState.BM.assets.filter(asset => asset._id===updateAction.asset._id)
+            let assetToChange: IAssetData[] = newState.BM.assets.filter(asset => asset._id === updateAction.asset._id)
             console.log(assetToChange);
-            assetToChange[0].asset_name=updateAction.asset.asset_name;
-            assetToChange[0].asset_value=updateAction.asset.asset_value;
+            assetToChange[0].asset_name = updateAction.asset.asset_name;
+            assetToChange[0].asset_value = updateAction.asset.asset_value;
             return newState;
+
+        case ActionType.delete_asset:
+            console.log("Delete Action");
+            let deleteAction = action as IDeleteAsset;
+            let assetsToKeep: IAssetData[] = newState.BM.assets.filter(asset => asset._id !== deleteAction.asset._id)
+            newState.BM.assets = assetsToKeep;
+            return newState;
+
         default:
             window.CS.log("1. Error!!!!! no reducer defined");
             return newState;
