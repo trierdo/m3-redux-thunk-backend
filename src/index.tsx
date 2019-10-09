@@ -18,9 +18,9 @@ console.log(window.CS.getUIState().counter);
 
 //the inital render
 ReactDOM.render(<App stateCounter={window.CS.getUIState().counter}/>, document.getElementById('root'));
+
+
 //whenever there is a new state, we render again
-
-
 window.CS.getStore().subscribe(() => {
     window.CS.log("3. before render ---------------------------------------------");
     ReactDOM.render(<App stateCounter={window.CS.getUIState().counter}/>, document.getElementById('root'));

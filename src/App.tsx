@@ -9,7 +9,6 @@ declare let window: IWindow;
 interface IProps {
   stateCounter:number
  }
-
 export interface IAssetData {
   _id: string;
   asset_name: string;
@@ -17,7 +16,6 @@ export interface IAssetData {
 }
 
 interface IState {
-  counter:number;
 }
 
 export interface ICreateAsset extends IAction{
@@ -31,7 +29,6 @@ export default class App extends React.PureComponent<IProps, IState> {
     super(props);
 
     this.handleCreateAsset = this.handleCreateAsset.bind(this);
-    this.handleDeleteAsset = this.handleDeleteAsset.bind(this);
   }
 
   render() {
@@ -46,12 +43,13 @@ export default class App extends React.PureComponent<IProps, IState> {
         <table>
           <tbody>
             <tr><th>description</th><th>value</th><th>action</th></tr>
-            {window.CS.getBMState().assets.map(asset => <SimpleAsset key={asset._id} onDelete={this.handleDeleteAsset} asset={asset} edit={false} />)}
+            {window.CS.getBMState().assets.map(asset => <SimpleAsset key={asset._id} asset={asset} edit={false} />)}
           </tbody>
         </table>
       </div>
     );
   }
+  
   handleCreateAsset() {
     console.log("handleCreateAsset invoked");
     const newAsset: IAssetData = {
@@ -65,9 +63,4 @@ export default class App extends React.PureComponent<IProps, IState> {
     }
     window.CS.clientAction(action);
   }
-  handleDeleteAsset(event: any) {
-    const IdOfAssetToDelete = event.target.id;
-    console.log("Delete asset with _id:" + IdOfAssetToDelete);
-  }
-
-}
+ }
