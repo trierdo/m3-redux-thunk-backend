@@ -72,7 +72,7 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
 
     handleNameChange(event: any) {
         const newAsset = this.props.asset;
-        newAsset.asset_name =  event.target.value
+        newAsset.asset_name = event.target.value
         const action: IAssetAction = {
             type: ActionType.update_asset,
             asset: newAsset
@@ -89,7 +89,7 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
         window.CS.clientAction(action);
     }
 
-    
+
     handleSave(event: any) {
         this.setState({ edit_mode: false });
 
@@ -99,9 +99,11 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
     handleDelete() {
         const action: IAssetAction = {
             type: ActionType.delete_asset,
-            asset:this.props.asset
+            asset: this.props.asset
         }
         window.CS.clientAction(action)
+
+        window.CS.clientAction(deleteFromDB(this.props.asset))
     }
     handleRerenderTest(event: any) {
         const action: IAction = {
@@ -110,30 +112,50 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
         window.CS.clientAction(action);
     }
 
-
-
-
 }
 
-function updateDatabase(target: any){
-    
-    return function (dispatch: any) {
-        console.log('within save action');
+function updateDatabase(target: any) {
 
-        const uiAction: IAction = {type: ActionType.server_called}
+    return function (dispatch: any) {
+
+        const uiAction: IAction = { type: ActionType.server_called }
         dispatch(uiAction);
 
-        
-     const IdOfAssetToSave: string = target.id;
-     const IndexOfAssetToSave: number = window.CS.getBMState().assets.findIndex((asset:IAssetData) => IdOfAssetToSave === asset._id);
 
-     axios.post('http://localhost:8080/assets/update/' + IdOfAssetToSave, window.CS.getBMState().assets[IndexOfAssetToSave])
-         .then(res => {
-             console.log('save complete: ', res.data)
-             const responseAction: IAction = {type: ActionType.finish_server_action}
-             dispatch(responseAction);
-     })
-         .catch(err => console.log(err))
+        const IdOfAssetToSave: string = target.id;
+        const IndexOfAssetToSave: number = window.CS.getBMState().assets.findIndex((asset: IAssetData) => IdOfAssetToSave === asset._id);
+
+        axios.post('http://localhost:8080/assets/update/' + IdOfAssetToSave, window.CS.getBMState().assets[IndexOfAssetToSave])
+            .then(res => {
+                console.log('save complete: ', res.data)
+                const responseAction: IAction = { type: ActionType.finish_server_action }
+                dispatch(responseAction);
+            })
+            .catch(err => console.log(err))
+
+    }
+}
+
+function deleteFromDB(whichAsset: IAssetData) {
+    return function (dispatch: any) {
+
+        const uiAction: IAction = { type: ActionType.server_called }
+        dispatch(uiAction);
+
+        const IdOfAssetToDelete: string = whichAsset._id;
+
+        axios.get('http://localhost:8080/assets/delete/' + IdOfAssetToDelete)
+            .then(res => {
+                console.log(res.data)
+                const responseAction: IAssetAction = {type: ActionType.delete_asset, asset: whichAsset}
+                dispatch(responseAction);
+
+          const finishAction: IAction = {type: ActionType.finish_server_action}
+          dispatch(finishAction);
+
+            });
+
+
 
     }
 }
