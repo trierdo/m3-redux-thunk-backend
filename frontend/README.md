@@ -8,9 +8,6 @@ In the project directory, you can run:
 
 ## Typescript and Redux Framework
 
-This is an example app to show how to build a scalabe singele page progressive web app with typescript, redux and react
+### define create action for backend
 
-react is as loosly coupled as possible to the concept, and could be easily repaced by native WebComponents
-
-https://developer.mozilla.org/de/docs/Web/Web_Components
-
+### define delete action for backend

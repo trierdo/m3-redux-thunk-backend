@@ -5,7 +5,8 @@ export enum ActionType {
     delete_asset = "delete_asset",
     render_test = "render_test",
     server_called = "server_called",
-    add_assets_from_server = "add_assets_from_server" 
+    add_assets_from_server = "add_assets_from_server" ,
+    finish_server_action = "finish_server_action"
 }
 export interface IAction {
     type: ActionType;

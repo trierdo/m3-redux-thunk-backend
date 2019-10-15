@@ -14,13 +14,17 @@ export const reducer = (state = initial, action: IAction) => {
         case ActionType.INIT:
             return newState;
         case ActionType.server_called:
-            newState.UI.waitingForResponse=true;
+            newState.UI.waitingForResponse = true;
             return newState;
 
         case ActionType.add_assets_from_server:
             const assetsLoaded = action as IAssetsLoadedAction;
-            newState.UI.waitingForResponse=false;
+            newState.UI.waitingForResponse = false;
             newState.BM.assets = assetsLoaded.assets;
+            return newState;
+
+        case ActionType.finish_server_action:
+            newState.UI.waitingForResponse = false;
             return newState;
 
         case ActionType.create_asset:

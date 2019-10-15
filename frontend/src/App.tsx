@@ -32,7 +32,7 @@ export default class App extends React.PureComponent<IProps, IState> {
     this.handleCreateAsset = this.handleCreateAsset.bind(this);
   }
 
-  componentDidMount(){
+  componentDidMount() {
     window.CS.clientAction(assetsReadActionCreator())
   }
 
@@ -57,37 +57,54 @@ export default class App extends React.PureComponent<IProps, IState> {
 
   handleCreateAsset() {
     console.log("handleCreateAsset invoked");
-    const newAsset: IAssetData = {
-      _id: mongoose.Types.ObjectId().toString(),
-      asset_name: "",
-      asset_value: 0
-    }
-    const action: IAssetAction = {
-      type: ActionType.create_asset,
-      asset: newAsset
-    }
-    window.CS.clientAction(action);
+    window.CS.clientAction(assetsCreator())
   }
 }
 
-export interface IAssetsLoadedAction extends IAction{
-  assets:IAssetData[]
+export interface IAssetsLoadedAction extends IAction {
+  assets: IAssetData[]
 }
 
-function assetsReadActionCreator(){
-  return function (dispatch:any){
+function assetsReadActionCreator() {
+  return function (dispatch: any) {
     const uiAction: IAction = {
-      type:ActionType.server_called
+      type: ActionType.server_called
     }
     dispatch(uiAction);
-    axios.get('http://localhost:8080/assets/').then(response => {
+    axios.get('http://localhost:8080/assets/')
+    
+    .then(response => {
       console.log("this data was loaded as a result of componentDidMount:");
       console.log(response.data);
-      const responseAction: IAssetsLoadedAction={
-        type:ActionType.add_assets_from_server,
-        assets:response.data as IAssetData[]
+      const responseAction: IAssetsLoadedAction = {
+        type: ActionType.add_assets_from_server,
+        assets: response.data as IAssetData[]
       }
       dispatch(responseAction);
     }).catch(function (error) { console.log(error); })
+  }
+}
+
+function assetsCreator() {
+  return function (dispatch: any) {
+    const uiAction: IAction = {type: ActionType.server_called}
+        dispatch(uiAction);
+
+        const newAsset: IAssetData = {
+          _id: mongoose.Types.ObjectId().toString(),
+          asset_name: "This is an example, press Edit to change name and Value",
+          asset_value: 0 
+        }
+
+          axios.post('http://localhost:8080/assets/add', newAsset)
+          .then(res => {
+            console.log(res.data)
+          const responseAction: IAssetAction = {type: ActionType.create_asset, asset: newAsset}
+          dispatch(responseAction);
+
+          const finishAction: IAction = {type: ActionType.finish_server_action}
+          dispatch(finishAction);
+        })
+          .catch(err => console.log(err));
   }
 }

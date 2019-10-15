@@ -1,7 +1,7 @@
 import React from 'react';
 import { IAssetData, IAssetAction } from '../App';
 import { ActionType, IAction } from '../framework/IAction';
-
+import axios from 'axios';
 import { IWindow } from '../framework/IWindow';
 declare let window: IWindow;
 
@@ -92,6 +92,9 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
     
     handleSave(event: any) {
         this.setState({ edit_mode: false });
+
+        window.CS.clientAction(updateDatabase(event.target))
+
     }
     handleDelete() {
         const action: IAssetAction = {
@@ -106,4 +109,32 @@ export default class SimpleAsset extends React.PureComponent<IProps, IState> {
         }
         window.CS.clientAction(action);
     }
+
+
+
+
 }
+
+function updateDatabase(target: any){
+    
+    return function (dispatch: any) {
+        console.log('within save action');
+
+        const uiAction: IAction = {type: ActionType.server_called}
+        dispatch(uiAction);
+
+        
+     const IdOfAssetToSave: string = target.id;
+     const IndexOfAssetToSave: number = window.CS.getBMState().assets.findIndex((asset:IAssetData) => IdOfAssetToSave === asset._id);
+
+     axios.post('http://localhost:8080/assets/update/' + IdOfAssetToSave, window.CS.getBMState().assets[IndexOfAssetToSave])
+         .then(res => {
+             console.log('save complete: ', res.data)
+             const responseAction: IAction = {type: ActionType.finish_server_action}
+             dispatch(responseAction);
+     })
+         .catch(err => console.log(err))
+
+    }
+}
+
